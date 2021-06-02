@@ -20,6 +20,16 @@ const routes: Routes = [
       return modulo.HomeModule;
     },
   },
+  {
+    path: 'animais',
+    /**
+     * Lazy loads AnimaisModule
+     */
+    loadChildren: async () => {
+      const modulo = await import('./animais/animais.module');
+      return modulo.AnimaisModule;
+    },
+  },  
 ];
 
 @NgModule({

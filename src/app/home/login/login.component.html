@@ -1,11 +1,44 @@
 <h4 class="text-center">Login</h4>
-
-<form class="form">
-    <div class="form-group">
-        <input class="form-control" placeholder="Nome do usuário" type="text"/>
-    </div>
-    <div class="form-group">
-        <input class="form-control" placeholder="Senha" type="password"/>
-    </div> 
-    <button class="btn btn-primary btn-block" type="submit">Login</button>   
+<!-- Formuário com 1waybind e variável de referência associada ao modelo ngForm -->
+<form class="form" (ngSubmit)="login()" #loginForm="ngForm">
+  <div class="form-group">
+    <!-- campo de input com 2waybind e variável de referência ngModel e regra de validação simples -->
+    <input
+      class="form-control"
+      placeholder="Nome do usuário"
+      type="text"
+      [(ngModel)]="usuario"
+      name="usuario"
+      #campoUsuario="ngModel"
+      required
+    />
+    <!-- componente de mensagem com visibilidade condicionada -->
+    <app-mensagem
+      *ngIf="campoUsuario.invalid && campoUsuario.touched"
+      mensagem="Usuário Obrigatório"
+    ></app-mensagem>
+  </div>
+  <div class="form-group">
+    <input
+      class="form-control"
+      placeholder="Senha"
+      type="password"
+      [(ngModel)]="senha"
+      name="senha"
+      #campoSenha="ngModel"
+      required
+    />
+    <app-mensagem
+      *ngIf="campoSenha.invalid && campoSenha.touched"
+      mensagem="Senha Obrigatória"
+    ></app-mensagem>
+  </div>
+  <!-- Botão com propriedade condicionada ao estado do objeto do modelo ngForm -->
+  <button
+    class="btn btn-primary btn-block"
+    type="submit"
+    [disabled]="loginForm.invalid"
+  >
+    Login
+  </button>
 </form>

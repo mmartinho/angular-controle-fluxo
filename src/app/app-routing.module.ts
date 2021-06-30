@@ -1,3 +1,5 @@
+import { LoginGuard } from './autenticacao/login.guard';
+import { AutenticacaoGuard } from './autenticacao/autenticacao.guard';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
@@ -8,7 +10,7 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'home',
+    redirectTo: 'home'
   },
   {
     path: 'home',
@@ -19,6 +21,7 @@ const routes: Routes = [
       const modulo = await import('./home/home.module');
       return modulo.HomeModule;
     },
+    canLoad: [LoginGuard]
   },
   {
     path: 'animais',
@@ -29,6 +32,7 @@ const routes: Routes = [
       const modulo = await import('./animais/animais.module');
       return modulo.AnimaisModule;
     },
+    canLoad: [AutenticacaoGuard]
   },  
 ];
 

@@ -1,12 +1,14 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, mapTo } from 'rxjs/operators';
 
 import { environment } from './../../environments/environment';
 import { TokenService } from './../autenticacao/token.service';
-import { Animais } from './animais';
+import { Animais, Animal } from './animais';
 
 const API = environment.apiURL;
+const NOT_MODIFIED = '304';
 
 @Injectable({
   providedIn: 'root',
@@ -20,10 +22,39 @@ export class AnimaisService {
    * @returns Observable<Animais>
    */
   listaDoUsuario(nomeDoUsuario: string): Observable<Animais> {
-    const token = this.tokenService.retornaToken();
-    const headers = new HttpHeaders().append('x-access-token', token);
-    return this.http.get<Animais>(`${API}/${nomeDoUsuario}/photos`, {
-      headers: headers,
-    });
+    return this.http.get<Animais>(`${API}/${nomeDoUsuario}/photos`);
+  }
+
+  /**
+   * Retorna as informações de um animal em um Observable
+   * @param id number
+   * @returns Observable<Animal>
+   */
+  buscaPorID(id: number): Observable<Animal> {
+    return this.http.get<Animal>(`${API}/photos/${id}`);
+  }
+
+  /**
+   * Exclui o animal, retornando-o em um Observable
+   * @param id 
+   * @returns Observable<Animal>
+   */
+  excluiAnimal(id: number): Observable<Animal> {
+    return this.http.delete<Animal>(`${API}/photos/${id}`);
+  }
+
+  /**
+   * Curti o animal, retornando um Observable booleano
+   * se foi ou não possível curtir
+   * @param id 
+   * @returns Observable<boolean>
+   * @throws Error
+   */
+  curtir(id: number): Observable<boolean> {
+    return this.http.post(`${API}/photos/${id}/like`,{},{observe:'response'}).pipe(
+      mapTo(true), catchError((error)=>{
+        return error.status === NOT_MODIFIED ? of(false) : throwError(error)
+      })
+    );
   }
 }

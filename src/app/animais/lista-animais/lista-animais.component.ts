@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Animais, Animal } from './../animais';
 import { AnimaisService } from './../animais.service';
 import { UsuarioService } from './../../autenticacao/usuario/usuario.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-lista-animais',
@@ -13,12 +14,19 @@ import { UsuarioService } from './../../autenticacao/usuario/usuario.service';
 })
 export class ListaAnimaisComponent implements OnInit {
   /*animais!: Animais;*/
-
-  animais$!: Observable<Animais>;
+  
+  animais!: Animais;
+   
+  /** 
+   * Passamos a usar "resolver", não é mais um Observable
+   * animais$!: Observable<Animais>;
+   */
 
   constructor(
+    /* Não usa mais Observable, então, não precisamos mais desses serviços
     private usuarioService: UsuarioService,
-    private animaisService: AnimaisService
+    private animaisService: AnimaisService*/
+    private activatedRoute: ActivatedRoute
   ) {}
 
   /**
@@ -53,7 +61,7 @@ export class ListaAnimaisComponent implements OnInit {
    * um outro observable. Note que propriedade animais 
    * passou a ser um tipo "Observable<Animais>"
    */
-  ngOnInit(): void {
+ /*ngOnInit(): void {
     this.animais$ = this.usuarioService.retornaUsuario().pipe(
       switchMap((usuario) => {
           const userName = usuario.name ?? '';
@@ -64,5 +72,17 @@ export class ListaAnimaisComponent implements OnInit {
           }
       })
     );
+  }*/
+
+  ngOnInit(): void {
+    /** 
+     * Os dados de animais são retornados ao objeto snapshot da rota ativa
+     * via Resolver 
+     * @see gatitobook\src\app\animais\lista-animais\lista-animais.resolver.ts
+     */    
+    this.activatedRoute.params.subscribe((params)=> {
+      this.animais = this.activatedRoute.snapshot.data['animais'];
+    })
   }
+
 }

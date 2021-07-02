@@ -27,6 +27,7 @@ export class AnimaisService {
 
   /**
    * Retorna as informações de um animal em um Observable
+   * OBS: esse observable é subscrito pela função pipe-sync no template
    * @param id number
    * @returns Observable<Animal>
    */
@@ -36,6 +37,7 @@ export class AnimaisService {
 
   /**
    * Exclui o animal, retornando-o em um Observable
+   * OBS: esse observable é subscrito pela função pipe-sync no template
    * @param id 
    * @returns Observable<Animal>
    */
@@ -46,6 +48,7 @@ export class AnimaisService {
   /**
    * Curti o animal, retornando um Observable booleano
    * se foi ou não possível curtir
+   * OBS: esse observable é subscrito pela função pipe-sync no template
    * @param id 
    * @returns Observable<boolean>
    * @throws Error

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEvent } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, mapTo } from 'rxjs/operators';
@@ -58,6 +58,27 @@ export class AnimaisService {
       mapTo(true), catchError((error)=>{
         return error.status === NOT_MODIFIED ? of(false) : throwError(error)
       })
+    );
+  }
+
+  /**
+   * Faz o upload em etapas, retornando um Observable carregando um objeto 
+   * de evento HTTP carregando um objeto de progresso 
+   * @param descricao 
+   * @param permiteComentario 
+   * @param arquivo 
+   * @returns 
+   */
+  upload(descricao: string, permiteComentario: boolean, arquivo: File): Observable<HttpEvent<Object>> {
+    const formData = new FormData();
+    formData.append('description', descricao);
+    formData.append('allowComments', permiteComentario ? 'true': 'false');
+    formData.append('imageFile', arquivo);
+    return this.http.post(`${API}/photos/upload`, formData, 
+      { 
+        observe: 'events', 
+        reportProgress: true 
+      }
     );
   }
 }
